@@ -129,7 +129,15 @@
         </div>
         <button type="button" onclick="addService()">Ajouter un service</button>
       </fieldset>
-
+      <fieldset class="paiement">
+        <legend>Mode de paiement</legend>
+        <label>
+          <select name="mode_paiement" required>
+            <option value="virement">Virement bancaire</option>
+            <option value="cheque">Chèque</option>
+          </select>
+        </label>
+      </fieldset>
       <button type="submit">Générer le PDF</button>
     </form>
 
@@ -290,14 +298,26 @@
           pdf.text("Conditions de paiement :", 12, finalY + 27);
           pdf.setFont(undefined, "normal");
           pdf.setTextColor(0);
-          pdf.text("Paiement par virement bancaire", 12, finalY + 33);
-          pdf.text("IBAN : R7616958000015145029526416", 12, finalY + 39);
-          pdf.text("BIC / SWIFT : QNTOFRP1XXX", 12, finalY + 45);
-          pdf.text(
-            "Code banque : 16958 | Guichet : 0001 | Compte : 51450295264 | Clé RIB : 16",
-            12,
-            finalY + 51
-          );
+
+          const modePaiement = data.get("mode_paiement");
+          if (modePaiement === "virement") {
+            pdf.text("Paiement par virement bancaire", 12, finalY + 33);
+            pdf.text("IBAN : R7616958000015145029526416", 12, finalY + 39);
+            pdf.text("BIC / SWIFT : QNTOFRP1XXX", 12, finalY + 45);
+            pdf.text(
+              "Code banque : 16958 | Guichet : 0001 | Compte : 51450295264 | Clé RIB : 16",
+              12,
+              finalY + 51
+            );
+          } else if (modePaiement === "cheque") {
+            pdf.text("Paiement par chèque à l'ordre de :", 12, finalY + 33);
+            pdf.text("BEN-G Fermetures", 12, finalY + 39);
+            pdf.text(
+              "À envoyer à : 39 Rue de la Gare de Reuilly, 75012 Paris",
+              12,
+              finalY + 45
+            );
+          }
 
           pdf.save(`Devis_${data.get("numero")}.pdf`);
         });
